@@ -1,4 +1,5 @@
 {
-  "url": "jdbc:hsqldb:file:audit-db;shutdown=true",
-  "driverclass" : "org.hsqldb.jdbcDriver"
+  "database": "audit-db",
+  "username": "user",
+  "password": "password"
 }

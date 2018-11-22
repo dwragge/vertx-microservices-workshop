@@ -1,13 +1,20 @@
 package io.vertx.workshop.portfolio.impl;
 
 import io.vertx.core.*;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.HttpResponse;
+import io.vertx.ext.web.codec.BodyCodec;
 import io.vertx.servicediscovery.ServiceDiscovery;
+import io.vertx.servicediscovery.types.HttpEndpoint;
 import io.vertx.workshop.portfolio.Portfolio;
 import io.vertx.workshop.portfolio.PortfolioService;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,14 +39,19 @@ public class PortfolioServiceImpl implements PortfolioService {
   public void getPortfolio(Handler<AsyncResult<Portfolio>> resultHandler) {
     // TODO
     // ----
-
+    resultHandler.handle(Future.succeededFuture(portfolio));
     // ----
   }
 
   private void sendActionOnTheEventBus(String action, int amount, JsonObject quote, int newAmount) {
     // TODO
     // ----
-
+    vertx.eventBus().publish(EVENT_ADDRESS, new JsonObject()
+        .put("action", action)
+        .put("quote", quote)
+        .put("date", System.currentTimeMillis())
+        .put("amount", amount)
+        .put("owned", newAmount));
     // ----
   }
 
@@ -47,7 +59,16 @@ public class PortfolioServiceImpl implements PortfolioService {
   public void evaluate(Handler<AsyncResult<Double>> resultHandler) {
     // TODO
     // ----
-
+    HttpEndpoint.getWebClient(discovery, new JsonObject().put("name", "quotes"),
+            client -> {
+                if (client.failed()) {
+                    resultHandler.handle(Future.failedFuture(client.cause()));
+                }
+                else {
+                    WebClient clientResult = client.result();
+                    computeEvaluation(clientResult, resultHandler);
+                }
+            });
     // ---
   }
 
@@ -72,7 +93,23 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     //TODO
     //----
-
+    client.get("/?name=" + encode(company))
+            .as(BodyCodec.jsonObject())
+            .send(ar -> {
+        if (ar.failed()) {
+            future.fail(ar.cause());
+        }
+        else {
+            HttpResponse<JsonObject> response = ar.result();
+            if (response.statusCode() == 200) {
+                Double value = response.body().getDouble("bid");
+                future.complete(value * numberOfShares);
+            }
+            else {
+                future.complete(0.0d);
+            }
+        }
+    });
     // ---
 
     return future;

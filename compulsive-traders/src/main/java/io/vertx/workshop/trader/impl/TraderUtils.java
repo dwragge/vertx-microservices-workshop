@@ -4,14 +4,14 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.workshop.portfolio.PortfolioService;
 
 import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A small utility class to initialize the compulsive traders and implement the stupid trading logic.
  */
 public class TraderUtils {
 
-  private final static Random RANDOM = new Random();
+  private final static ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
   public static String pickACompany() {
     int choice = RANDOM.nextInt(2);

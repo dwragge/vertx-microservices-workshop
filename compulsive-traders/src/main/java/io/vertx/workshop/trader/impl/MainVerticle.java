@@ -15,8 +15,5 @@ public class MainVerticle extends AbstractVerticle {
     // Java traders
     vertx.deployVerticle(JavaCompulsiveTraderVerticle.class.getName(), new DeploymentOptions().setInstances(2));
 
-    // Groovy traders...
-    vertx.deployVerticle("GroovyCompulsiveTraderVerticle.groovy");
-
   }
 }
