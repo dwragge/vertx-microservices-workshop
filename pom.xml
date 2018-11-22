@@ -30,6 +30,7 @@
     <module>audit-service</module>
     <module>compulsive-traders</module>
     <module>trader-dashboard</module>
+    <module>order-book</module>
   </modules>
 
   <dependencyManagement>
