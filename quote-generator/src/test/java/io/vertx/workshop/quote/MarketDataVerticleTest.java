@@ -16,7 +16,8 @@ public class MarketDataVerticleTest {
   public void testComputation() {
     JsonObject json = new JsonObject()
         .put("name", "test")
-        .put("symbol", "TT");
+        .put("symbol", "TT")
+        .put("price", 10);
 
     MarketDataVerticle verticle = new MarketDataVerticle();
     verticle.init(json);

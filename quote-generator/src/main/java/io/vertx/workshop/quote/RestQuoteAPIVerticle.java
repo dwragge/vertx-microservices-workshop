@@ -21,13 +21,8 @@ public class RestQuoteAPIVerticle extends AbstractVerticle {
   public void start() throws Exception {
     vertx.eventBus().<JsonObject>consumer(GeneratorConfigVerticle.ADDRESS)
         .handler(message -> {
-          // TODO Populate the `quotes` map with the received quote
-          // Quotes are json objects you can retrieve from the message body
-          // The map is structured as follows: name -> quote
-          // ----
             JsonObject quote = message.body();
             quotes.put(quote.getString("name"), quote);
-          // ----
         });
 
 
